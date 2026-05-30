@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apresentação: Git & GitHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* ESTILOS GERAIS */
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #131a26;
+            --primary-color: #22c55e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Urbanist', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* CONTAINER DOS SLIDES */
+        .presentation-container {
+            height: 100vh;
+            position: relative;
+            width: 100vw;
+        }
+
+        .slide {
+            align-items: center;
+            display: flex;
+            height: 100%;
+            justify-content: center;
+            left: 0;
+            opacity: 0;
+            padding: 60px;
+            position: absolute;
+            top: 0;
+            transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+            transform: scale(0.95);
+            pointer-events: none;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+            z-index: 2;
+        }
+
+        /* EFEITO DE GLOW DE FUNDO */
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -20%;
+            width: 140%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 30%, rgba(34, 197, 94, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ESTRUTURA INTERNA DO SLIDE */
+        .slide-content {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: center;
+        }
+
+        .slide-title {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            border-left: 5px solid var(--primary-color);
+            padding-left: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .slide-title span {
+            color: var(--primary-color);
+        }
+
+        /* LAYOUTS VARIADOS */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .three-columns {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        /* COMPONENTES VISUAIS */
+        .tile {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 32px;
+            height: 100%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .tile .icon {
+            font-size: 36px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .tile h3 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        .tile p {
+            color: var(--text-muted);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .bullet-list {
+            list-style: none;
+        }
+
+        .bullet-list li {
+            position: relative;
+            padding-left: 32px;
+            margin-bottom: 18px;
+            font-size: 18px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .bullet-list li strong {
+            color: var(--text-main);
+        }
+
+        .bullet-list i {
+            position: absolute;
+            left: 0;
+            top: 4px;
+            color: var(--primary-color);
+            font-size: 18px;
+        }
+
+        /* CÓDIGO DE EXEMPLO */
+        code {
+            display: block;
+            background: #070a12;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary-color);
+            font-family: 'Courier New', Courier, monospace;
+            color: #e2e8f0;
+            margin-top: 15px;
+            line-height: 1.6;
+        }
+
+        /* TABELA COMPARATIVA */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: #000;
+            padding: 18px;
+            font-weight: 700;
+            text-align: left;
+        }
+
+        td {
+            padding: 18px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-muted);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        td strong {
+            color: var(--text-main);
+        }
+
+        /* CAPA DA APRESENTAÇÃO */
+        .cover {
+            text-align: center;
+            align-items: center;
+        }
+
+        .cover p.subtitle {
+            color: var(--primary-color);
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .cover h1 {
+            font-size: 64px;
+            margin-bottom: 24px;
+            font-weight: 700;
+        }
+
+        .cover h1 span {
+            color: var(--primary-color);
+        }
+
+        .cover p.desc {
+            color: var(--text-muted);
+            font-size: 20px;
+        }
+
+        /* CONTROLES DE NAVEGAÇÃO */
+        .controls {
+            position: absolute;
+            bottom: 40px;
+            right: 60px;
+            display: flex;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        .nav-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary-color);
+            color: #000;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+        }
+
+        .progress-bar-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.05);
+            z-index: 10;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px var(--primary-color);
+        }
+
+        .slide-counter {
+            position: absolute;
+            bottom: 52px;
+            left: 60px;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="presentation-container">
+        
+        <div class="slide active">
+            <div class="slide-content cover">
+                <p class="subtitle">Profissão de Engenharia de Software</p>
+                <h1>Desvendando o <span>Git</span> e o <span>GitHub</span></h1>
+                <div style="width: 80px; height: 4px; background: var(--primary-color); margin: 0 auto 24px auto;"></div>
+                <p class="desc">A revolução essencial no controle de versão e trabalho em equipe</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="slide-title">Git: A Linha do Tempo do Seu Código</h2>
+                <div class="two-column">
+                    <div>
+                        <ul class="bullet-list">
+                            <li><i class="fa-solid fa-code-branch"></i><strong>O que é:</strong> Um sistema de controle de versão de código aberto, rápido e gratuito criado em 2005 por Linus Torvalds.</li>
+                            <li><i class="fa-solid fa-fire"></i><strong>Por que foi criado:</strong> Para gerenciar o desenvolvimento do Linux de forma veloz, confiável e totalmente descentralizada.</li>
+                        </ul>
+                    </div>
+                    <div class="tile">
+                        <div class="icon"><i class="fa-solid fa-shield-cat"></i></div>
+                        <h3>Problemas Resolvidos:</h3>
+                        <p>Elimina de vez o caos de criar pastas cópias como <i>"projeto_final_v2_ajustado"</i>, evita a perda acidental de códigos e possibilita que múltiplos arquivos sejam editados ao mesmo tempo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="slide-title">Sistemas <span>Distribuidos</span> (DVCS)</h2>
+                <div class="two-column">
+                    <div class="tile">
+                        <div class="icon"><i class="fa-solid fa-network-wired"></i></div>
+                        <h3>Histórico Completo Local</h3>
+                        <p>Diferente de ferramentas antigas, no Git cada computador possui um clone 100% completo de todo o histórico do projeto, não dependendo de uma conexão constante com um servidor.</p>
+                    </div>
+                    <div>
+                        <ul class="bullet-list">
+                            <li><i class="fa-solid fa-bolt"></i><strong>Velocidade Máxima:</strong> Operações como histórico e commits acontecem localmente em milissegundos.</li>
+                            <li><i class="fa-solid fa-plane"></i><strong>Trabalho Offline:</strong> Faça alterações e grave versões mesmo sem acesso à internet.</li>
+                            <li><i class="fa-solid fa-server"></i><strong>Redundância Total:</strong> Se o servidor principal quebrar, qualquer cópia local pode restaurar o sistema.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="slide-title">O Fluxo de Trabalho Local</h2>
+                <div class="three-columns">
+                    <div class="tile">
+                        <div class="icon"><i class="fa-solid fa-folder-open"></i></div>
+                        <h3>1. Working Directory</h3>
+                        <p>Sua pasta visível onde os arquivos estão sendo ativamente criados ou alterados no momento. O Git nota as mudanças, mas ainda não as protegeu.</p>
+                    </div>
+                    <div class="tile">
+                        <div class="icon"><i class="fa-solid fa-clipboard-list"></i></div>
+                        <h3>2. Staging Area</h3>
+                        <p>A área de preparação. É o filtro intermediário onde você escolhe cirurgicamente quais arquivos editados vão entrar na próxima foto oficial do projeto.</p>
+                    </div>
+                    <div class="tile">
+                        <div class="icon"><i class="fa-solid fa-box-archive"></i></div>
+                        <h3>3. Local Repository</h3>
+                        <p>O coração do Git. Guardado na pasta oculta <code>.git</code>, é onde as versões oficiais ficam salvas permanentemente com criptografia segura.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="slide-title">A Importância dos <span>Commits</span></h2>
+                <div class="two-column">
+                    <div>
+                        <ul class="bullet-list">
+                            <li><i class="fa-solid fa-camera"></i><strong>O que são:</strong> Checkpoints (pontos de restauração) imutáveis da sua aplicação.</li>
+                            <li><i class="fa-solid fa-circle-check"></i><strong>Boas Práticas:</strong> Mensagens devem ser diretas, no imperativo (ex: "Adiciona tela de login") e focar em apenas uma modificação lógica por vez.</li>
+                        </ul>
+                    </div>
+                    <div class="tile">
+                        <h3 style="color:var(--primary-color)">Conventional Commits</h3>
+                        <p>Padrão profissional amplamente adotado no mercado mundial:</p>
+                        <code>
+                            feat: adiciona botão de dark mode<br>
+                            fix: corrige erro na validação do CPF<br>
+                            docs: atualiza guia de instalação no README
+                        </code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="slide-title">Branches e o Processo de <span>Merge</span></h2>
+                <div class="two-column">
+                    <div class="tile">
+                        <div class="icon"><i class="fa-solid fa-code-fork"></i></div>
+                        <h3>Branches (Ramificações)</h3>
+                        <p>Linhas do tempo paralelas. Permitem desenvolver uma nova funcionalidade de forma isolada sem afetar ou quebrar o código principal estável (<code>main</code>).</p>
+                    </div>
+                    <div class="tile">
+                        <div class="icon"><i class="fa-solid fa-code-merge"></i></div>
+                        <h3>Merge (Fusão)</h3>
+                        <p>O ato de reintegrar uma ramificação de volta à linha principal. Se duas pessoas alterarem as mesmas linhas, o Git pausa e solicita uma resolução manual de <strong>conflito</strong>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="slide-title">GitHub: A Nuvem do Desenvolvedor</h2>
+                <div class="two-column">
+                    <div>
+                        <ul class="bullet-list">
+                            <li><i class="fa-brands fa-github" style="font-size:24px"></i><strong>O que é:</i></strong> Uma plataforma web global em nuvem feita para hospedar e gerenciar projetos que usam o Git.</li>
+                            <li><i class="fa-solid fa-arrows-left-right"></i><strong>Diferença crucial:</strong> O <strong>Git</strong> é o software local instalado no seu terminal; o <strong>GitHub</strong> é o site que guarda o código remotamente na nuvem e conecta você a outros devs.</li>
+                        </ul>
+                    </div>
+                    <div class="tile">
+                        <div class="icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                        <h3>Hospedagem Remota</h3>
+                        <p>Permite enviar seu histórico de alterações do computador local direto para a internet (<code>git push</code>) e baixá-lo em qualquer máquina (<code>git pull</code>).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="slide-title">Recursos de Engenharia de Equipes</h2>
+                <div class="three-columns">
+                    <div class="tile">
+                        <div class="icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <h3>Issues</h3>
+                        <p>Fórum interno para mapear bugs, planejar tarefas, delegar responsabilidades e documentar o progresso visual de forma ágil.</p>
+                    </div>
+                    <div class="tile">
+                        <div class="icon"><i class="fa-solid fa-code-pull-request"></i></div>
+                        <h3>Pull Requests (PR)</h3>
+                        <p>Uma solicitação formal para enviar suas alterações a um projeto. Ideal para abrir debates e receber sugestões de melhoria.</p>
+                    </div>
+                    <div class="tile">
+                        <div class="icon"><i class="fa-solid fa-user-check"></i></div>
+                        <h3>Code Review</h3>
+                        <p>Processo de revisão onde engenheiros experientes analisam a qualidade, segurança e padrões de código antes de autorizar o Merge.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="slide-title">Open Source e Carreira Profissional</h2>
+                <div class="two-column">
+                    <div class="tile">
+                        <div class="icon"><i class="fa-solid fa-globe"></i></div>
+                        <h3>Impacto Open Source</h3>
+                        <p>O GitHub sustenta a base da tecnologia mundial. Permite que qualquer programador contribua com códigos para ferramentas globais famosas como Linux, React, VS Code e Python.</p>
+                    </div>
+                    <div>
+                        <ul class="bullet-list">
+                            <li><i class="fa-solid fa-address-card"></i><strong>Seu Novo Currículo:</strong> Recrutadores técnicos avaliam o GitHub para ver projetos práticos, qualidade estrutural e dedicação real do candidato.</li>
+                            <li><i class="fa-solid fa-laptop-code"></i><strong>Provando Valor:</strong> Falar de habilidades em texto não supera mostrar códigos rodando em produção.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="slide-title">O GitHub como uma Rede Social</h2>
+                <div class="two-column">
+                    <div>
+                        <ul class="bullet-list">
+                            <li><i class="fa-brands fa-linkedin"></i><strong>Como o LinkedIn:</strong> É focado inteiramente na sua reputação técnica e network profissional, gerando conexões diretas de emprego.</li>
+                            <li><i class="fa-brands fa-instagram"></i><strong>Como o Instagram:</strong> Possui feed de novidades, sistema para seguir desenvolvedores referências, dar "Stars" (curtidas) em projetos e interagir em fóruns.</li>
+                        </ul>
+                    </div>
+                    <div class="tile">
+                        <div class="icon"><i class="fa-solid fa-chart-line"></i></div>
+                        <h3>O Gráfico de Contribuições</h3>
+                        <p>O famoso painel verde do GitHub serve como um diário público, ilustrando visualmente a constância diária do seu ritmo de desenvolvimento e estudo ao longo do ano.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="slide-title">Mercado corporativo e Alternativas</h2>
+                <p style="color:var(--text-muted); margin-bottom: 20px; font-size:18px;">Embora o GitHub domine o cenário, a engenharia de software conta com fortes alternativas voltadas a diferentes demandas:</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Plataforma</th>
+                            <th>Diferencial Técnico</th>
+                            <th>Público Alvo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>GitHub</strong></td>
+                            <td>Ecossistema massivo e maior comunidade open source do planeta.</td>
+                            <td>Desenvolvedores em geral e Projetos Públicos.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GitLab</strong></td>
+                            <td>Foco extremo em ferramentas integradas nativas de CI/CD (DevOps).</td>
+                            <td>Grandes corporações e automações complexas.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Bitbucket</strong></td>
+                            <td>Integração nativa perfeita com o ecossistema Atlassian (Jira e Trello).</td>
+                            <td>Equipes que usam metodologias ágeis estritas.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content" style="text-align: center; align-items: center;">
+                <h2 style="font-size: 64px; color: var(--primary-color); margin-bottom: 10px;">Perguntas & Respostas</h2>
+                <p style="font-size: 20px; color: var(--text-muted); max-width: 600px; line-height: 1.6; margin-bottom: 40px;">
+                    Dominar o Git e o GitHub não é opcional, é o alicerce diário da rotina de um Engenheiro de Software.
+                </p>
+                
+                <div style="width: 100%; max-width: 800px;">
+                    <p style="font-size: 14px; color: var(--primary-color); text-transform: uppercase; letter-spacing: 2px; font-weight: 700; margin-bottom: 20px; text-align: center;">
+                        Integrantes do Grupo
+                    </p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
+                        
+                        <a href="https://github.com/seu-usuario" target="_blank" style="text-decoration: none; display: flex; align-items: center; gap: 15px; background: var(--card-bg); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color); transition: all 0.3s ease;" onmouseover="this.style.borderColor='var(--primary-color)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border-color)'; this.style.transform='translateY(0)'">
+                            <i class="fa-brands fa-github" style="font-size: 30px; color: var(--text-main);"></i>
+                            <div style="text-align: left;">
+                                <p style="font-size: 16px; font-weight: 700; color: var(--text-main); margin: 0;">Seu Nome</p>
+                                <p style="font-size: 12px; color: var(--text-muted); margin: 0;">@seu-usuario</p>
+                            </div>
+                        </a>
+
+                        <a href="https://github.com/usuario-integrante2" target="_blank" style="text-decoration: none; display: flex; align-items: center; gap: 15px; background: var(--card-bg); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color); transition: all 0.3s ease;" onmouseover="this.style.borderColor='var(--primary-color)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border-color)'; this.style.transform='translateY(0)'">
+                            <i class="fa-brands fa-github" style="font-size: 30px; color: var(--text-main);"></i>
+                            <div style="text-align: left;">
+                                <p style="font-size: 16px; font-weight: 700; color: var(--text-main); margin: 0;">Nome do Colega 2</p>
+                                <p style="font-size: 12px; color: var(--text-muted); margin: 0;">@usuario2</p>
+                            </div>
+                        </a>
+
+                        <a href="https://github.com/usuario-integrante3" target="_blank" style="text-decoration: none; display: flex; align-items: center; gap: 15px; background: var(--card-bg); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color); transition: all 0.3s ease;" onmouseover="this.style.borderColor='var(--primary-color)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border-color)'; this.style.transform='translateY(0)'">
+                            <i class="fa-brands fa-github" style="font-size: 30px; color: var(--text-main);"></i>
+                            <div style="text-align: left;">
+                                <p style="font-size: 16px; font-weight: 700; color: var(--text-main); margin: 0;">Nome do Colega 3</p>
+                                <p style="font-size: 12px; color: var(--text-muted); margin: 0;">@usuario3</p>
+                            </div>
+                        </a>
+
+                        <a href="https://github.com/usuario-integrante3" target="_blank" style="text-decoration: none; display: flex; align-items: center; gap: 15px; background: var(--card-bg); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color); transition: all 0.3s ease;" onmouseover="this.style.borderColor='var(--primary-color)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border-color)'; this.style.transform='translateY(0)'">
+                            <i class="fa-brands fa-github" style="font-size: 30px; color: var(--text-main);"></i>
+                            <div style="text-align: left;">
+                                <p style="font-size: 16px; font-weight: 700; color: var(--text-main); margin: 0;">Wallace Alves de Freitas</p>
+                                <p style="font-size: 12px; color: var(--text-muted); margin: 0;">@Wallace9607</p>
+                            </div>
+                        </a>
+
+                    </div>
+                    
+                    <div style="margin-top: 50px; text-align: left; background: var(--card-bg); padding: 24px; border-radius: 12px; width: 100%; max-width: 870px; border: 1px solid var(--border-color);">
+                        <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6;">
+                            <strong>Referências de Estudo:</strong><br>
+                            • Livro Oficial <a href="https://git-scm.com/book/en/v2">Pro Git</a> (Scott Chacon & Ben Straub)<br>
+                            • Documentação de Ajuda: <a href="https://docs.github.com/pt">docs.github.com</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="slide-counter">Slide: <span id="current-index">1</span> / <span id="total-slides">12</span></div>
+        
+        <div class="controls">
+            <button class="nav-btn" id="prev-btn" aria-label="Slide anterior"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="nav-btn" id="next-btn" aria-label="Próximo slide"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress"></div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.slide');
+            const nextBtn = document.getElementById('next-btn');
+            const prevBtn = document.getElementById('prev-btn');
+            const currentIndexEl = document.getElementById('current-index');
+            const totalSlidesEl = document.getElementById('total-slides');
+            const progressBar = document.getElementById('progress');
+            
+            let currentSlideIndex = 0;
+            const totalSlides = slides.length;
+            
+            totalSlidesEl.textContent = totalSlides;
+
+            function updatePresentation() {
+                // Remove classe ativa de todos
+                slides.forEach(slide => slide.classList.remove('active'));
+                
+                // Ativa o slide atual
+                slides[currentSlideIndex].classList.add('active');
+                
+                // Atualiza números nos textos
+                currentIndexEl.textContent = currentSlideIndex + 1;
+                
+                // Atualiza barra de progresso inferior
+                const progressPercentage = ((currentSlideIndex + 1) / totalSlides) * 100;
+                progressBar.style.width = `${progressPercentage}%`;
+            }
+
+            function nextSlide() {
+                if (currentSlideIndex < totalSlides - 1) {
+                    currentSlideIndex++;
+                    updatePresentation();
+                }
+            }
+
+            function prevSlide() {
+                if (currentSlideIndex > 0) {
+                    currentSlideIndex--;
+                    updatePresentation();
+                }
+            }
+
+            // Eventos dos botões da tela
+            nextBtn.addEventListener('click', nextSlide);
+            prevBtn.addEventListener('click', prevSlide);
+
+            // Controle por teclado (Setas Direita/Esquerda e Barra de Espaço)
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === ' ') {
+                    e.preventDefault();
+                    nextSlide();
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    prevSlide();
+                }
+            });
+
+            // Inicia o estado da barra de progresso no primeiro carregamento
+            updatePresentation();
+        });
+    </script>
+</body>
+</html>
